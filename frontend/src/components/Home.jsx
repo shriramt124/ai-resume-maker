@@ -32,8 +32,8 @@ const ResumeHomePage = () => {
     }, 3000);
     return () => clearInterval(interval);
   }, []);
-
-  const templates = [
+ 
+  const templates = [ 
     { color: 'from-blue-400 to-purple-500', name: 'Modern' },
     { color: 'from-green-400 to-teal-500', name: 'Professional' },
     { color: 'from-orange-400 to-red-500', name: 'Creative' }
