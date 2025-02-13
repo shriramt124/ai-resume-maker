@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
- 
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { 
   Sparkles, 
@@ -13,6 +12,8 @@ import {
   X
 } from 'lucide-react';
 import TemplateShowcase from './TemplateShowCase';
+
+
 
 const ResumeHomePage = () => {
   const { scrollY } = useScroll();
@@ -33,6 +34,7 @@ const ResumeHomePage = () => {
     return () => clearInterval(interval);
   }, []);
  
+  
   const templates = [ 
     { color: 'from-blue-400 to-purple-500', name: 'Modern' },
     { color: 'from-green-400 to-teal-500', name: 'Professional' },
@@ -331,7 +333,7 @@ const ResumeHomePage = () => {
           </div>
         </div>
       </section>
- <TemplateShowcase />
+      <TemplateShowcase />
       {/* Call to Action */}
       <section className="py-24">
         <div className="container mx-auto px-6">
@@ -452,6 +454,7 @@ const ResumeHomePage = () => {
           </div>
         </div>
       </footer>
+
     </div>
   );
 };
