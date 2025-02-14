@@ -48,7 +48,11 @@ const resumeSchema = new mongoose.Schema({
         title: { type: String, required: true },
         description: { type: String, required: false },
         date: { type: String, required: false } // Consider using Date type if storing as ISO date
-    }]
+    }],
+   templateName:{
+    type:String,
+    required:true
+   }
 });
 
 // Create the Resume model

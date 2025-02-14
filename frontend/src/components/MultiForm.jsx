@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Download, Save, User, Briefcase, GraduationCap, Code, Award, Languages, Phone, Trophy, Edit, Eye } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { parse, formatRgb } from 'culori';
+
 import ResumePreview from './ResumePreview';
 
 const ResumeForm = () => {
@@ -62,30 +64,38 @@ const ResumeForm = () => {
   });
 
   // Add PDF generation function
+
+
   const downloadPDF = async () => {
     if (!resumePreviewRef.current) return;
-
+  
     try {
       setIsGeneratingPDF(true);
       const element = resumePreviewRef.current;
-
+  
       // Store original HTML and CSS
       const originalHTML = element.innerHTML;
       const originalStyles = element.getAttribute('style') || '';
-
+  
       // Convert oklch colors to RGB equivalents
       const tempHTML = originalHTML.replace(/oklch\([^)]+\)/g, (match) => {
-        // Add your oklch to RGB conversions here
-        if (match.includes('oklch(0.855 0.194 258.888)')) return '#3b82f6'; // blue
-        if (match.includes('oklch(0.92 0.01 258.888)')) return '#f3f4f6'; // light gray
-        return '#000000'; // default fallback
+        try {
+          const color = parse(match);
+          if (color) {
+            return formatRgb(color); // Convert to RGB
+          }
+        } catch (error) {
+          console.warn(`Failed to parse color: ${match}`, error);
+        }
+        return '#000000'; // Fallback to black
       });
-
-      // Create temporary element with converted colors
+  
+      // Apply the modified HTML to the element
       element.innerHTML = tempHTML;
       element.style.transform = 'scale(1)';
       element.style.width = '21cm';
-
+  
+      // Generate the canvas
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
@@ -93,20 +103,19 @@ const ResumeForm = () => {
         width: element.scrollWidth,
         height: element.scrollHeight,
       });
-
-      // Restore original content and styles
+  
+      // Restore the original HTML and styles
       element.innerHTML = originalHTML;
       element.setAttribute('style', originalStyles);
-
+  
+      // Create the PDF
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
         format: 'a4',
       });
-
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
       pdf.addImage(canvas, 'PNG', 0, 0, pdfWidth, pdfHeight);
       pdf.save('resume.pdf');
     } catch (error) {
