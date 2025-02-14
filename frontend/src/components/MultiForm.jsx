@@ -1,8 +1,16 @@
-import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Save, User, Briefcase, GraduationCap, Code, Award, Languages, Phone } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { ChevronLeft, ChevronRight, Download, Save, User, Briefcase, GraduationCap, Code, Award, Languages, Phone, Trophy, Edit, Eye } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import ResumePreview from './ResumePreview';
 
 const ResumeForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [activeTab, setActiveTab] = useState('edit');
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const resumePreviewRef = useRef(null);
+
+  // Keep all your existing state and form data
   const [formData, setFormData] = useState({
     personalInfo: {
       fullName: '',
@@ -34,6 +42,12 @@ const ResumeForm = () => {
       technologies: '',
       link: ''
     }],
+    achievements: [{
+      title: '',
+      description: '',
+      date: '',
+      impact: ''
+    }],
     skills: {
       technical: '',
       soft: '',
@@ -47,11 +61,66 @@ const ResumeForm = () => {
     }]
   });
 
+  // Add PDF generation function
+  const downloadPDF = async () => {
+    if (!resumePreviewRef.current) return;
+
+    try {
+      setIsGeneratingPDF(true);
+      const element = resumePreviewRef.current;
+
+      // Store original HTML and CSS
+      const originalHTML = element.innerHTML;
+      const originalStyles = element.getAttribute('style') || '';
+
+      // Convert oklch colors to RGB equivalents
+      const tempHTML = originalHTML.replace(/oklch\([^)]+\)/g, (match) => {
+        // Add your oklch to RGB conversions here
+        if (match.includes('oklch(0.855 0.194 258.888)')) return '#3b82f6'; // blue
+        if (match.includes('oklch(0.92 0.01 258.888)')) return '#f3f4f6'; // light gray
+        return '#000000'; // default fallback
+      });
+
+      // Create temporary element with converted colors
+      element.innerHTML = tempHTML;
+      element.style.transform = 'scale(1)';
+      element.style.width = '21cm';
+
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: true,
+        width: element.scrollWidth,
+        height: element.scrollHeight,
+      });
+
+      // Restore original content and styles
+      element.innerHTML = originalHTML;
+      element.setAttribute('style', originalStyles);
+
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+      });
+
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      pdf.addImage(canvas, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save('resume.pdf');
+    } catch (error) {
+      console.error('PDF generation failed:', error);
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  };
   const steps = [
     { title: 'Personal Info', icon: User },
     { title: 'Experience', icon: Briefcase },
     { title: 'Education', icon: GraduationCap },
     { title: 'Projects', icon: Code },
+    { title: 'Achievements', icon: Trophy },
     { title: 'Skills', icon: Languages },
     { title: 'Certifications', icon: Award }
   ];
@@ -85,7 +154,6 @@ const ResumeForm = () => {
       [section]: prev[section].filter((_, i) => i !== index)
     }));
   };
-
   const renderPersonalInfo = () => (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -140,7 +208,6 @@ const ResumeForm = () => {
       />
     </div>
   );
-
   const renderExperience = () => (
     <div className="space-y-6">
       {formData.experience.map((exp, index) => (
@@ -173,14 +240,12 @@ const ResumeForm = () => {
             />
             <input
               type="date"
-              placeholder="Start Date"
               className="input-field"
               value={exp.startDate}
               onChange={(e) => handleInputChange('experience', 'startDate', e.target.value, index)}
             />
             <input
               type="date"
-              placeholder="End Date"
               className="input-field"
               value={exp.endDate}
               onChange={(e) => handleInputChange('experience', 'endDate', e.target.value, index)}
@@ -209,6 +274,71 @@ const ResumeForm = () => {
         className="w-full p-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
       >
         Add Experience
+      </button>
+    </div>
+  );
+
+  const renderEducation = () => (
+    <div className="space-y-6">
+      {formData.education.map((edu, index) => (
+        <div key={index} className="p-4 bg-gray-800 rounded-lg space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Education {index + 1}</h3>
+            {formData.education.length > 1 && (
+              <button
+                onClick={() => removeItem('education', index)}
+                className="text-red-400 hover:text-red-300"
+              >
+                Remove
+              </button>
+            )}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              type="text"
+              placeholder="Institution"
+              className="input-field"
+              value={edu.institution}
+              onChange={(e) => handleInputChange('education', 'institution', e.target.value, index)}
+            />
+            <input
+              type="text"
+              placeholder="Degree"
+              className="input-field"
+              value={edu.degree}
+              onChange={(e) => handleInputChange('education', 'degree', e.target.value, index)}
+            />
+            <input
+              type="text"
+              placeholder="Field of Study"
+              className="input-field"
+              value={edu.field}
+              onChange={(e) => handleInputChange('education', 'field', e.target.value, index)}
+            />
+            <input
+              type="date"
+              className="input-field"
+              value={edu.graduationDate}
+              onChange={(e) => handleInputChange('education', 'graduationDate', e.target.value, index)}
+            />
+            <input
+              type="number"
+              placeholder="GPA"
+              className="input-field"
+              value={edu.gpa}
+              onChange={(e) => handleInputChange('education', 'gpa', e.target.value, index)}
+              step="0.01"
+              min="0"
+              max="4"
+            />
+          </div>
+        </div>
+      ))}
+      <button
+        onClick={() => addItem('education')}
+        className="w-full p-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+      >
+        Add Education
       </button>
     </div>
   );
@@ -262,72 +392,6 @@ const ResumeForm = () => {
         className="w-full p-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
       >
         Add Project
-      </button>
-    </div>
-  );
-
-  const renderEducation = () => (
-    <div className="space-y-6">
-      {formData.education.map((edu, index) => (
-        <div key={index} className="p-4 bg-gray-800 rounded-lg space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold">Education {index + 1}</h3>
-            {formData.education.length > 1 && (
-              <button
-                onClick={() => removeItem('education', index)}
-                className="text-red-400 hover:text-red-300"
-              >
-                Remove
-              </button>
-            )}
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Institution"
-              className="input-field"
-              value={edu.institution}
-              onChange={(e) => handleInputChange('education', 'institution', e.target.value, index)}
-            />
-            <input
-              type="text"
-              placeholder="Degree"
-              className="input-field"
-              value={edu.degree}
-              onChange={(e) => handleInputChange('education', 'degree', e.target.value, index)}
-            />
-            <input
-              type="text"
-              placeholder="Field of Study"
-              className="input-field"
-              value={edu.field}
-              onChange={(e) => handleInputChange('education', 'field', e.target.value, index)}
-            />
-            <input
-              type="date"
-              placeholder="Graduation Date"
-              className="input-field"
-              value={edu.graduationDate}
-              onChange={(e) => handleInputChange('education', 'graduationDate', e.target.value, index)}
-            />
-            <input
-              type="number"
-              placeholder="GPA"
-              className="input-field"
-              value={edu.gpa}
-              onChange={(e) => handleInputChange('education', 'gpa', e.target.value, index)}
-              step="0.01"
-              min="0"
-              max="4"
-            />
-          </div>
-        </div>
-      ))}
-      <button
-        onClick={() => addItem('education')}
-        className="w-full p-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
-      >
-        Add Education
       </button>
     </div>
   );
@@ -396,7 +460,6 @@ const ResumeForm = () => {
             />
             <input
               type="date"
-              placeholder="Date Obtained"
               className="input-field"
               value={cert.date}
               onChange={(e) => handleInputChange('certifications', 'date', e.target.value, index)}
@@ -420,6 +483,62 @@ const ResumeForm = () => {
     </div>
   );
 
+  // New Achievements Section
+  const renderAchievements = () => (
+    <div className="space-y-6">
+      {formData.achievements.map((achievement, index) => (
+        <div key={index} className="p-4 bg-gray-800 rounded-lg space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Achievement {index + 1}</h3>
+            {formData.achievements.length > 1 && (
+              <button
+                onClick={() => removeItem('achievements', index)}
+                className="text-red-400 hover:text-red-300"
+              >
+                Remove
+              </button>
+            )}
+          </div>
+          <input
+            type="text"
+            placeholder="Achievement Title"
+            className="input-field"
+            value={achievement.title}
+            onChange={(e) => handleInputChange('achievements', 'title', e.target.value, index)}
+          />
+          <textarea
+            placeholder="Achievement Description"
+            className="input-field h-32"
+            value={achievement.description}
+            onChange={(e) => handleInputChange('achievements', 'description', e.target.value, index)}
+          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              type="date"
+              placeholder="Date"
+              className="input-field"
+              value={achievement.date}
+              onChange={(e) => handleInputChange('achievements', 'date', e.target.value, index)}
+            />
+            <input
+              type="text"
+              placeholder="Impact/Result"
+              className="input-field"
+              value={achievement.impact}
+              onChange={(e) => handleInputChange('achievements', 'impact', e.target.value, index)}
+            />
+          </div>
+        </div>
+      ))}
+      <button
+        onClick={() => addItem('achievements')}
+        className="w-full p-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+      >
+        Add Achievement
+      </button>
+    </div>
+  );
+ 
   const renderCurrentStep = () => {
     switch (currentStep) {
       case 0:
@@ -431,8 +550,10 @@ const ResumeForm = () => {
       case 3:
         return renderProjects();
       case 4:
-        return renderSkills();
+        return renderAchievements();
       case 5:
+        return renderSkills();
+      case 6:
         return renderCertifications();
       default:
         return null;
@@ -441,101 +562,116 @@ const ResumeForm = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100">
-      {/* Mobile Navigation */}
-     {/* Mobile Navigation */}
-     <div className="md:hidden fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700">
-        <div className="flex justify-between items-center p-4">
+      {/* Mobile Tab Switcher */}
+      <div className="md:hidden fixed top-0 left-0 right-0 bg-gray-800 border-b border-gray-700 z-50">
+        <div className="flex">
           <button
-            onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
-            disabled={currentStep === 0}
-            className="p-2 rounded-lg bg-gray-700 disabled:opacity-50"
+            onClick={() => setActiveTab('edit')}
+            className={`flex-1 p-4 text-center ${activeTab === 'edit' ? 'bg-blue-600' : 'bg-gray-800'}`}
           >
-            <ChevronLeft className="h-5 w-5" />
+            <Edit className="h-5 w-5 mx-auto mb-1" />
+            Edit
           </button>
-          <span className="font-medium">{steps[currentStep].title}</span>
           <button
-            onClick={() => setCurrentStep(prev => Math.min(steps.length - 1, prev + 1))}
-            disabled={currentStep === steps.length - 1}
-            className="p-2 rounded-lg bg-gray-700 disabled:opacity-50"
+            onClick={() => setActiveTab('preview')}
+            className={`flex-1 p-4 text-center ${activeTab === 'preview' ? 'bg-blue-600' : 'bg-gray-800'}`}
           >
-            <ChevronRight className="h-5 w-5" />
+            <Eye className="h-5 w-5 mx-auto mb-1" />
+            Preview
           </button>
         </div>
       </div>
 
-      {/* Desktop Navigation */}
-      <nav className="hidden md:block fixed left-0 top-0 h-screen w-64 bg-gray-800 p-4 overflow-y-auto">
-        <h2 className="text-xl font-bold mb-6">Resume Sections</h2>
-        <div className="space-y-2">
-          {steps.map((step, index) => {
-            const StepIcon = step.icon;
-            return (
-              <button
-                key={index}
-                onClick={() => setCurrentStep(index)}
-                className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors ${
-                  currentStep === index
-                    ? 'bg-blue-600 text-white'
-                    : 'hover:bg-gray-700 text-gray-300'
-                }`}
-              >
-                <StepIcon className="h-5 w-5" />
-                <span>{step.title}</span>
-              </button>
-            );
-          })}
-        </div>
-      </nav>
-
-      {/* Main Content */}
-      <main className="md:ml-64 p-4 md:p-8 pb-24 md:pb-8">
-        <div className="max-w-4xl mx-auto">
-          {/* Desktop Progress Bar */}
-          <div className="hidden md:block mb-8">
-            <div className="flex items-center justify-between mb-2">
-              <h1 className="text-2xl font-bold">{steps[currentStep].title}</h1>
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
-                  disabled={currentStep === 0}
-                  className="px-4 py-2 rounded-lg bg-gray-700 disabled:opacity-50 flex items-center gap-2"
-                >
-                  <ChevronLeft className="h-5 w-5" />
-                  Previous
-                </button>
-                <button
-                  onClick={() => setCurrentStep(prev => Math.min(steps.length - 1, prev + 1))}
-                  disabled={currentStep === steps.length - 1}
-                  className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
-                >
-                  Next
-                  <ChevronRight className="h-5 w-5" />
-                </button>
-              </div>
+      {/* Desktop Layout */}
+      <div className="hidden md:flex h-screen pt-0">
+        {/* Left Side - Form */}
+        <div className="w-1/2 overflow-y-auto bg-gray-900 border-r border-gray-700">
+          <nav className="bg-gray-800 p-4">
+            <div className="flex space-x-2 overflow-x-auto">
+              {steps.map((step, index) => {
+                const StepIcon = step.icon;
+                return (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentStep(index)}
+                    className={`flex items-center gap-2 p-2 rounded-lg whitespace-nowrap ${currentStep === index
+                        ? 'bg-blue-600 text-white'
+                        : 'hover:bg-gray-700 text-gray-300'
+                      }`}
+                  >
+                    <StepIcon className="h-4 w-4" />
+                    <span>{step.title}</span>
+                  </button>
+                );
+              })}
             </div>
-            <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-blue-600 transition-all duration-300"
-                style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-              />
-            </div>
-          </div>
-
-          {/* Form Content */}
-          <div className="bg-gray-800 rounded-lg p-6 mb-8">
+          </nav>
+          <div className="p-6">
             {renderCurrentStep()}
           </div>
-
-          {/* Save Button */}
-          <button
-            className="fixed bottom-20 md:bottom-8 right-4 md:right-8 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2 transition-colors"
-            onClick={() => console.log('Save form data:', formData)}
-          >
-            <Save className="h-5 w-5" />
-            Save Resume
-          </button>
         </div>
-      </main>
+
+        {/* Right Side - Preview */}
+        <div className="w-1/2 bg-gray-800 overflow-y-auto">
+          <div className="p-6" ref={resumePreviewRef}>
+            <ResumePreview formData={formData} />
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Layout */}
+      <div className="md:hidden min-h-screen pt-20 pb-20">
+        {activeTab === 'edit' ? (
+          <div className="p-4">
+            <nav className="mb-4 overflow-x-auto">
+              <div className="flex space-x-2 w-max">
+                {steps.map((step, index) => {
+                  const StepIcon = step.icon;
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentStep(index)}
+                      className={`flex items-center gap-2 p-2 rounded-lg whitespace-nowrap ${currentStep === index
+                          ? 'bg-blue-600 text-white'
+                          : 'hover:bg-gray-700 text-gray-300'
+                        }`}
+                    >
+                      <StepIcon className="h-4 w-4" />
+                      <span>{step.title}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </nav>
+            {renderCurrentStep()}
+          </div>
+        ) : (
+          <div className="p-4 overflow-x-auto">
+            <div ref={resumePreviewRef}>
+              <ResumePreview formData={formData} />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Action Buttons */}
+      <div className="fixed bottom-20 md:bottom-8 right-4 md:right-8 flex gap-2">
+        <button
+          onClick={downloadPDF}
+          disabled={isGeneratingPDF}
+          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 transition-colors"
+        >
+          <Download className="h-5 w-5" />
+          {isGeneratingPDF ? 'Generating...' : 'Export PDF'}
+        </button>
+        <button
+          className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2 transition-colors"
+          onClick={() => console.log('Save form data:', formData)}
+        >
+          <Save className="h-5 w-5" />
+          Save Resume
+        </button>
+      </div>
 
       {/* Global Styles */}
       <style jsx global>{`
@@ -556,6 +692,13 @@ const ResumeForm = () => {
         
         .input-field::placeholder {
           color: #6b7280;
+        }
+
+        @media print {
+          .resume-preview {
+            transform: scale(1) !important;
+            height: auto !important;
+          }
         }
       `}</style>
     </div>
