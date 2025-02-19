@@ -55,7 +55,7 @@ const TemplateShowcase = () => {
   }, [currentTemplate]);
 
   return (
-    <section className="py-12 md:py-24 bg-gray-900/50 relative overflow-hidden">
+    <section className="py-8 md:py-24 bg-gray-900/50 relative overflow-hidden">
       {/* Animated background elements */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         {[...Array(20)].map((_, i) => (
@@ -87,47 +87,47 @@ const TemplateShowcase = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-8 md:mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
             Choose Your Template
           </h2>
-          <div className="flex justify-end mb-8">
+          <div className="flex justify-center md:justify-end mb-4 md:mb-8">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => window.location.href = '/templates'}
-              className="px-6 py-3 rounded-xl font-semibold bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 flex items-center gap-2"
+              className="px-4 md:px-6 py-2 md:py-3 text-sm md:text-base rounded-xl font-semibold bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 flex items-center gap-2"
             >
               View All Templates
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
             </motion.button>
           </div>
         </motion.div>
 
         <div className="relative overflow-hidden">
           {/* Navigation Arrows */}
-          <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between z-10 px-4">
+          <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between z-10 px-2 md:px-4">
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-lg border border-white/20"
+              className="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-lg border border-white/20"
               onClick={() => paginate(-1)}
             >
-              <ChevronLeft className="w-6 h-6" />
+              <ChevronLeft className="w-4 h-4 md:w-6 md:h-6" />
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-lg border border-white/20"
+              className="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-lg border border-white/20"
               onClick={() => paginate(1)}
             >
-              <ChevronRight className="w-6 h-6" />
+              <ChevronRight className="w-4 h-4 md:w-6 md:h-6" />
             </motion.button>
           </div>
 
           {/* Templates Carousel */}
-          <div className="overflow-hidden px-12">
+          <div className="overflow-hidden px-4 md:px-12">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentTemplate}
@@ -135,7 +135,7 @@ const TemplateShowcase = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: direction > 0 ? -200 : 200 }}
                 transition={{ duration: 0.5 }}
-                className="flex justify-center gap-12"
+                className="flex justify-center gap-4 md:gap-12"
               >
                 {[...Array(3)].map((_, index) => {
                   const templateIndex = (currentTemplate + index - 1 + templates.length) % templates.length;
@@ -146,7 +146,7 @@ const TemplateShowcase = () => {
                       whileHover={{ scale: 1.05, y: -10 }}
                       onMouseMove={handleMouseMove}
                     >
-                      <div className="w-96 h-[32rem] rounded-2xl overflow-hidden bg-white/5 backdrop-blur-2xl border border-white/10 relative">
+                      <div className="w-[280px] md:w-96 h-[24rem] md:h-[32rem] rounded-2xl overflow-hidden bg-white/5 backdrop-blur-2xl border border-white/10 relative">
                         <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500/20 to-purple-500/20 animate-border-glow" />
                         <div className="absolute inset-0 bg-gradient-to-br from-gray-900/90 to-gray-800/90" />
                         <div className={`absolute inset-0 bg-gradient-to-br ${templates[templateIndex].color} opacity-10`} />
@@ -157,17 +157,17 @@ const TemplateShowcase = () => {
                         />
                         
                         {/* Hover Overlay with Glassmorphism */}
-                        <div className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col items-center justify-center p-8">
-                          <div className="bg-white/10 backdrop-blur-xl p-8 rounded-xl border border-white/20 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                            <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">{templates[templateIndex].name}</h3>
-                            <p className="text-gray-300 text-base mb-8 text-center">{templates[templateIndex].category}</p>
+                        <div className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col items-center justify-center p-4 md:p-8">
+                          <div className="bg-white/10 backdrop-blur-xl p-4 md:p-8 rounded-xl border border-white/20 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                            <h3 className="text-xl md:text-2xl font-bold mb-2 md:mb-3 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">{templates[templateIndex].name}</h3>
+                            <p className="text-gray-300 text-sm md:text-base mb-4 md:mb-8 text-center">{templates[templateIndex].category}</p>
                             <motion.button
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
-                              className="w-full px-8 py-4 rounded-xl font-semibold bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 transition-colors flex items-center justify-center gap-3 text-lg shadow-lg"
+                              className="w-full px-4 md:px-8 py-2 md:py-4 rounded-xl font-semibold bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 transition-colors flex items-center justify-center gap-2 md:gap-3 text-sm md:text-lg shadow-lg"
                             >
                               Use Template
-                              <ArrowRight className="w-5 h-5" />
+                              <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
                             </motion.button>
                           </div>
                         </div>
