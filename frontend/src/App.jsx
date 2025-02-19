@@ -10,6 +10,8 @@ import Login from './components/Login'
 import SignUp from './components/SignUp'
 import Pricing from './components/Pricing'
 import Contact from './components/Contact'
+import TemplateShowcase from './components/TemplateShowCase'
+import TemplatesGallery from './components/TemplatesGallery'
 
 function App() {
   return (
@@ -24,6 +26,7 @@ function App() {
           <Route path="/signup" element={<SignUp />}/>
           <Route path="/pricing" element={<Pricing />}/>
           <Route path="/contact" element={<Contact />}/>
+          <Route path="/templates" element={<TemplatesGallery />}/>
         </Routes>
       </main>
       <Footer />

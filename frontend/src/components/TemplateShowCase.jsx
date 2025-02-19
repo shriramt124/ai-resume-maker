@@ -92,6 +92,17 @@ const TemplateShowcase = () => {
           <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
             Choose Your Template
           </h2>
+          <div className="flex justify-end mb-8">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => window.location.href = '/templates'}
+              className="px-6 py-3 rounded-xl font-semibold bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 flex items-center gap-2"
+            >
+              View All Templates
+              <ArrowRight className="w-5 h-5" />
+            </motion.button>
+          </div>
         </motion.div>
 
         <div className="relative overflow-hidden">
