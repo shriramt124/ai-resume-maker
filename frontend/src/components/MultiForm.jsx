@@ -2,10 +2,9 @@ import React, { useState, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Download, Save, User, Briefcase, GraduationCap, Code, Award, Languages, Phone, Trophy, Edit, Eye } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { parse, formatRgb } from 'culori';
-
+ 
 import ResumePreview from './ResumePreview';
-
+ 
 const ResumeForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [activeTab, setActiveTab] = useState('edit');
@@ -15,115 +14,129 @@ const ResumeForm = () => {
   // Keep all your existing state and form data
   const [formData, setFormData] = useState({
     personalInfo: {
-      fullName: '',
-      email: '',
-      phone: '',
-      location: '',
-      linkedIn: '',
-      portfolio: '',
-      summary: ''
+      fullName: 'John Doe',
+      email: 'johndoe@example.com',
+      phone: '+1 (555) 123-4567',
+      location: 'New York, NY',
+      linkedIn: 'https://www.linkedin.com/in/johndoe',
+      github: 'https://github.com/johndoe',
+      portfolio: 'https://johndoe.com',
+      summary:
+        'Highly motivated software engineer with 5+ years of experience in full-stack development. Skilled in building scalable web applications and solving complex problems. Passionate about creating user-friendly interfaces and delivering high-quality products.',
     },
-    experience: [{
-      company: '',
-      position: '',
-      startDate: '',
-      endDate: '',
-      current: false,
-      description: ''
-    }],
-    education: [{
-      institution: '',
-      degree: '',
-      field: '',
-      graduationDate: '',
-      gpa: ''
-    }],
-    projects: [{
-      name: '',
-      description: '',
-      technologies: '',
-      link: ''
-    }],
-    achievements: [{
-      title: '',
-      description: '',
-      date: '',
-      impact: ''
-    }],
+    experience: [
+      {
+        company: 'Tech Solutions Inc.',
+        position: 'Senior Software Engineer',
+        startDate: 'Jan 2020',
+        endDate: 'Present',
+        current: true,
+        description:
+          'Led the development of a cloud-based SaaS platform using React and Node.js. Collaborated with cross-functional teams to design and implement new features, resulting in a 30% increase in user engagement.',
+      },
+      {
+        company: 'Innovate Tech',
+        position: 'Software Engineer',
+        startDate: 'Jun 2017',
+        endDate: 'Dec 2019',
+        current: false,
+        description:
+          'Developed RESTful APIs and integrated third-party services to enhance application functionality. Optimized database queries, reducing response times by 40%.',
+      },
+    ],
+    education: [
+      {
+        institution: 'Stanford University',
+        degree: 'Bachelor of Science',
+        field: 'Computer Science',
+        graduationDate: 'May 2017',
+        gpa: '3.8/4.0',
+      },
+    ],
+    projects: [
+      {
+        name: 'E-Commerce Platform',
+        description:
+          'Built a full-stack e-commerce platform with React, Redux, and Firebase. Implemented features like user authentication, payment integration, and real-time notifications.',
+        technologies: 'React, Redux, Firebase, Stripe',
+        link: 'https://ecommerce-johndoe.com',
+      },
+      {
+        name: 'Task Management App',
+        description:
+          'Developed a task management app with a focus on productivity. Used TypeScript for type safety and improved code maintainability.',
+        technologies: 'TypeScript, React, Node.js, MongoDB',
+        link: 'https://taskmanager-johndoe.com',
+      },
+    ],
+    achievements: [
+      {
+        title: 'Best Team Contributor Award',
+        description: 'Recognized for outstanding teamwork and leadership skills.',
+        date: '2021',
+        impact: 'Improved team collaboration and project delivery timelines.',
+      },
+      {
+        title: 'Published Research Paper',
+        description: 'Published a paper on AI-driven optimization techniques.',
+        date: '2019',
+        impact: 'Cited over 50 times in academic journals.',
+      },
+    ],
     skills: {
-      technical: '',
-      soft: '',
-      languages: ''
+      technical: 'JavaScript, React, Node.js, Python, SQL, AWS',
+      soft: 'Problem-solving, Communication, Leadership',
+      languages: 'English (Native), Spanish (Intermediate)',
     },
-    certifications: [{
-      name: '',
-      issuer: '',
-      date: '',
-      link: ''
-    }]
+    certifications: [
+      {
+        name: 'AWS Certified Solutions Architect',
+        issuer: 'Amazon Web Services',
+        date: '2022',
+        link: 'https://www.certmetrics.com/aws/public/badge',
+      },
+      {
+        name: 'Advanced React Course',
+        issuer: 'Udemy',
+        date: '2021',
+        link: 'https://www.udemy.com/certificate/UC-XXXXXX/',
+      },
+    ],
   });
+  const handleDownloadPDF = () => {
+    const input = document.getElementById('resume-preview');
 
-  // Add PDF generation function
+    setIsGeneratingPDF(true);
 
-
-  const downloadPDF = async () => {
-    if (!resumePreviewRef.current) return;
-  
-    try {
-      setIsGeneratingPDF(true);
-      const element = resumePreviewRef.current;
-  
-      // Store original HTML and CSS
-      const originalHTML = element.innerHTML;
-      const originalStyles = element.getAttribute('style') || '';
-  
-      // Convert oklch colors to RGB equivalents
-      const tempHTML = originalHTML.replace(/oklch\([^)]+\)/g, (match) => {
-        try {
-          const color = parse(match);
-          if (color) {
-            return formatRgb(color); // Convert to RGB
-          }
-        } catch (error) {
-          console.warn(`Failed to parse color: ${match}`, error);
+    html2canvas(input, {
+      scale: 3,
+      useCORS: true,
+      allowTaint: false,
+      logging: false,
+      backgroundColor: '#ffffff',
+      windowWidth: input.scrollWidth,
+      windowHeight: input.scrollHeight,
+      onclone: (clonedDoc) => {
+        const element = clonedDoc.getElementById('resume-preview');
+        if (element) {
+          element.style.transform = 'none';
+          element.style.height = 'auto';
         }
-        return '#000000'; // Fallback to black
-      });
-  
-      // Apply the modified HTML to the element
-      element.innerHTML = tempHTML;
-      element.style.transform = 'scale(1)';
-      element.style.width = '21cm';
-  
-      // Generate the canvas
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: true,
-        width: element.scrollWidth,
-        height: element.scrollHeight,
-      });
-  
-      // Restore the original HTML and styles
-      element.innerHTML = originalHTML;
-      element.setAttribute('style', originalStyles);
-  
-      // Create the PDF
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4',
-      });
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      pdf.addImage(canvas, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      }
+    }).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png', 1.0);
+      const pdf = new jsPDF('p', 'mm', 'a4');
+
+      const imgWidth = 210; // A4 width in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
       pdf.save('resume.pdf');
-    } catch (error) {
-      console.error('PDF generation failed:', error);
-    } finally {
       setIsGeneratingPDF(false);
-    }
+    });
   };
+
+ 
   const steps = [
     { title: 'Personal Info', icon: User },
     { title: 'Experience', icon: Briefcase },
@@ -655,9 +668,9 @@ const ResumeForm = () => {
             {renderCurrentStep()}
           </div>
         ) : (
-          <div className="p-4 overflow-x-auto">
-            <div ref={resumePreviewRef}>
-              <ResumePreview formData={formData} />
+            <div className="w-1/2 bg-gray-800 overflow-y-auto">
+              <div className="p-6" ref={resumePreviewRef} id="resume-preview">
+                <ResumePreview formData={formData} />
             </div>
           </div>
         )}
@@ -666,11 +679,24 @@ const ResumeForm = () => {
       {/* Action Buttons */}
       <div className="fixed bottom-20 md:bottom-8 right-4 md:right-8 flex gap-2">
         <button
-          onClick={downloadPDF}
+          onClick={handleDownloadPDF}
           disabled={isGeneratingPDF}
-          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 transition-colors"
+          style={{
+            backgroundColor: isGeneratingPDF ? '#4c1d95' : '#7e22ce', // Purple-600 and Purple-700
+            color: 'white',
+            padding: '0.5rem 1rem', // px-4 py-2 equivalent
+            borderRadius: '0.5rem', // Rounded-lg equivalent
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)', // Shadow-lg equivalent
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem', // Gap-2 equivalent
+            transition: 'background-color 0.3s ease', // Transition-colors equivalent
+            cursor: isGeneratingPDF ? 'not-allowed' : 'pointer',
+            opacity: isGeneratingPDF ? 0.7 : 1,
+            marginBottom:"10px"
+          }}
         >
-          <Download className="h-5 w-5" />
+          <Download style={{ height: '1.25rem', width: '1.25rem' }} /> {/* h-5 w-5 equivalent */}
           {isGeneratingPDF ? 'Generating...' : 'Export PDF'}
         </button>
         <button

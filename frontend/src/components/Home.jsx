@@ -7,9 +7,7 @@ import {
   Users, 
   Layout, 
   Star,
-  ArrowRight,
-  Menu,
-  X
+  ArrowRight
 } from 'lucide-react';
 import TemplateShowcase from './TemplateShowCase';
 
@@ -17,7 +15,6 @@ import TemplateShowcase from './TemplateShowCase';
 
 const ResumeHomePage = () => {
   const { scrollY } = useScroll();
-  const [isNavOpen, setIsNavOpen] = useState(false);
   const [activeTemplate, setActiveTemplate] = useState(0);
   const [isHoveringDemo, setIsHoveringDemo] = useState(false);
 
@@ -63,81 +60,7 @@ const ResumeHomePage = () => {
         ))}
       </div>
 
-      {/* Navigation */}
-      <motion.nav 
-        className="fixed w-full z-50 bg-gray-950/80 backdrop-blur-xl border-b border-gray-800"
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-      >
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <motion.div
-              className="flex items-center space-x-2"
-              whileHover={{ scale: 1.05 }}
-            >
-              <Sparkles className="text-blue-400" />
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                ResumeAI
-              </span>
-            </motion.div>
 
-            {/* Desktop Menu */}
-            <div className="hidden md:flex items-center space-x-8">
-              {['Features', 'Templates', 'Pricing', 'About'].map((item) => (
-                <motion.a
-                  key={item}
-                  href={`#${item.toLowerCase()}`}
-                  className="relative text-gray-300 hover:text-white transition-colors"
-                  whileHover={{ scale: 1.1 }}
-                >
-                  {item}
-                </motion.a>
-              ))}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-blue-500 hover:bg-blue-600 px-6 py-2 rounded-full font-medium"
-              >
-                Get Started
-              </motion.button>
-            </div>
-
-            {/* Mobile Menu Button */}
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              className="md:hidden"
-              onClick={() => setIsNavOpen(!isNavOpen)}
-            >
-              {isNavOpen ? <X /> : <Menu />}
-            </motion.button>
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {isNavOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="md:hidden bg-gray-900"
-            >
-              <div className="container mx-auto px-6 py-4">
-                {['Features', 'Templates', 'Pricing', 'About'].map((item) => (
-                  <motion.a
-                    key={item}
-                    href={`#${item.toLowerCase()}`}
-                    className="block py-2 text-gray-300 hover:text-white"
-                    whileHover={{ x: 10 }}
-                  >
-                    {item}
-                  </motion.a>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.nav>
 
       {/* Hero Section */}
       <motion.section
@@ -363,97 +286,7 @@ const ResumeHomePage = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900/50 border-t border-gray-800 py-12">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div>
-            <h3 className="text-lg font-semibold mb-4">Product</h3>
-              <ul className="space-y-2">
-                {['Features', 'Templates', 'Pricing', 'Updates'].map((item) => (
-                  <li key={item}>
-                    <motion.a
-                      href={`#${item.toLowerCase()}`}
-                      className="text-gray-400 hover:text-white transition-colors"
-                      whileHover={{ x: 5 }}
-                    >
-                      {item}
-                    </motion.a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Company</h3>
-              <ul className="space-y-2">
-                {['About', 'Blog', 'Careers', 'Contact'].map((item) => (
-                  <li key={item}>
-                    <motion.a
-                      href={`#${item.toLowerCase()}`}
-                      className="text-gray-400 hover:text-white transition-colors"
-                      whileHover={{ x: 5 }}
-                    >
-                      {item}
-                    </motion.a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Resources</h3>
-              <ul className="space-y-2">
-                {['Guide', 'Examples', 'Support', 'FAQ'].map((item) => (
-                  <li key={item}>
-                    <motion.a
-                      href={`#${item.toLowerCase()}`}
-                      className="text-gray-400 hover:text-white transition-colors"
-                      whileHover={{ x: 5 }}
-                    >
-                      {item}
-                    </motion.a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Legal</h3>
-              <ul className="space-y-2">
-                {['Privacy', 'Terms', 'Security', 'Cookies'].map((item) => (
-                  <li key={item}>
-                    <motion.a
-                      href={`#${item.toLowerCase()}`}
-                      className="text-gray-400 hover:text-white transition-colors"
-                      whileHover={{ x: 5 }}
-                    >
-                      {item}
-                    </motion.a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex items-center space-x-2 mb-4 md:mb-0"
-            >
-              <Sparkles className="text-blue-400" />
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                ResumeAI
-              </span>
-            </motion.div>
-
-            <div className="text-gray-400 text-sm">
-              © {new Date().getFullYear()} ResumeAI. All rights reserved.
-            </div>
-          </div>
-        </div>
-      </footer>
+    
 
     </div>
   );
