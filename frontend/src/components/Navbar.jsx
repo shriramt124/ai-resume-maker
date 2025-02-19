@@ -31,6 +31,8 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-8">
             <Link to="/" className="text-gray-300 hover:text-white transition-colors">Home</Link>
             <Link to="/info" className="text-gray-300 hover:text-white transition-colors">Create Resume</Link>
+            <Link to="/pricing" className="text-gray-300 hover:text-white transition-colors">Pricing</Link>
+            <Link to="/contact" className="text-gray-300 hover:text-white transition-colors">Contact</Link>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -74,6 +76,20 @@ const Navbar = () => {
                 onClick={() => setIsNavOpen(false)}
               >
                 Create Resume
+              </Link>
+              <Link 
+                to="/pricing" 
+                className="block py-2 text-gray-300 hover:text-white"
+                onClick={() => setIsNavOpen(false)}
+              >
+                Pricing
+              </Link>
+              <Link 
+                to="/contact" 
+                className="block py-2 text-gray-300 hover:text-white"
+                onClick={() => setIsNavOpen(false)}
+              >
+                Contact
               </Link>
             </div>
           </motion.div>

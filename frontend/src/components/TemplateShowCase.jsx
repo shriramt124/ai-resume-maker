@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Star, Download } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Download, ArrowRight } from 'lucide-react';
 
 const TemplateShowcase = () => {
   const [currentTemplate, setCurrentTemplate] = useState(0);
@@ -11,34 +11,26 @@ const TemplateShowcase = () => {
     {
       name: "Modern Professional",
       category: "Professional",
-      rating: 4.9,
-      downloads: "12k+",
       color: "from-blue-400 to-purple-500",
-      previewImage: "/api/placeholder/300/400"
+      previewImage: "https://placehold.co/300x400/1a1a1a/ffffff?text=Modern+Professional"
     },
     {
       name: "Creative Designer",
       category: "Creative",
-      rating: 4.8,
-      downloads: "8k+",
       color: "from-pink-400 to-red-500",
-      previewImage: "/api/placeholder/300/400"
+      previewImage: "https://placehold.co/300x400/1a1a1a/ffffff?text=Creative+Designer"
     },
     {
       name: "Executive Suite",
       category: "Business",
-      rating: 4.7,
-      downloads: "15k+",
       color: "from-green-400 to-teal-500",
-      previewImage: "/api/placeholder/300/400"
+      previewImage: "https://placehold.co/300x400/1a1a1a/ffffff?text=Executive+Suite"
     },
     {
       name: "Minimalist",
       category: "Simple",
-      rating: 4.9,
-      downloads: "20k+",
       color: "from-gray-400 to-gray-600",
-      previewImage: "/api/placeholder/300/400"
+      previewImage: "https://placehold.co/300x400/1a1a1a/ffffff?text=Minimalist"
     }
   ];
 
@@ -55,167 +47,140 @@ const TemplateShowcase = () => {
     setCurrentTemplate((prev) => (prev + newDirection + templates.length) % templates.length);
   };
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      paginate(1);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [currentTemplate]);
+
   return (
     <section className="py-12 md:py-24 bg-gray-900/50 relative overflow-hidden">
-      {/* Animated background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-900/50 to-gray-900">
-        <div className="absolute inset-0 opacity-30">
-          {[...Array(20)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute rounded-full"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                width: `${Math.random() * 300 + 50}px`,
-                height: `${Math.random() * 300 + 50}px`,
-                background: `radial-gradient(circle at center, ${
-                  ['rgba(59,130,246,0.1)', 'rgba(147,51,234,0.1)', 'rgba(236,72,153,0.1)'][
-                    Math.floor(Math.random() * 3)
-                  ]
-                } 0%, transparent 70%)`,
-                transform: `scale(${Math.random() * 1 + 0.5})`,
-                animation: `float ${Math.random() * 10 + 10}s infinite linear`
-              }}
-            />
-          ))}
-        </div>
+      {/* Animated background elements */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        {[...Array(20)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10"
+            style={{
+              width: Math.random() * 300 + 50,
+              height: Math.random() * 300 + 50,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              transform: `scale(${Math.random() * 1 + 0.5})`
+            }}
+            animate={{
+              x: [0, Math.random() * 100 - 50],
+              y: [0, Math.random() * 100 - 50],
+              opacity: [0.3, 0.5, 0.3]
+            }}
+            transition={{
+              duration: 10 + Math.random() * 10,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+          />
+        ))}
       </div>
-
       <div className="container mx-auto px-4 relative">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-8 md:mb-16"
+          className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-            Professional Templates
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+            Choose Your Template
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto text-base md:text-lg px-4">
-            Choose from our collection of professionally designed templates. 
-            Each template is ATS-friendly and fully customizable.
-          </p>
         </motion.div>
 
-        {/* Showcase Container */}
-        <div className="max-w-6xl mx-auto">
-          <div className="relative min-h-[500px] md:min-h-[600px]">
-            {/* Template Display */}
+        <div className="relative overflow-hidden">
+          {/* Navigation Arrows */}
+          <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between z-10 px-4">
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-lg border border-white/20"
+              onClick={() => paginate(-1)}
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-lg border border-white/20"
+              onClick={() => paginate(1)}
+            >
+              <ChevronRight className="w-6 h-6" />
+            </motion.button>
+          </div>
+
+          {/* Templates Carousel */}
+          <div className="overflow-hidden px-12">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentTemplate}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className="grid md:grid-cols-2 gap-4 md:gap-8 items-center p-4 md:p-6 relative"
-                onMouseMove={handleMouseMove}
+                initial={{ opacity: 0, x: direction > 0 ? 200 : -200 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: direction > 0 ? -200 : 200 }}
+                transition={{ duration: 0.5 }}
+                className="flex justify-center gap-12"
               >
-                {/* Navigation Arrows - Now positioned relative to the grid container */}
-                <div className="absolute top-[15%] md:top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between pointer-events-none z-20 px-2 md:px-4 w-full">
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-lg border border-white/20 pointer-events-auto hover:bg-white/20 transition-colors -translate-x-1/2 md:-translate-x-6"
-                    onClick={() => paginate(-1)}
-                  >
-                    <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-lg border border-white/20 pointer-events-auto hover:bg-white/20 transition-colors translate-x-1/2 md:translate-x-6"
-                    onClick={() => paginate(1)}
-                  >
-                    <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
-                  </motion.button>
-                </div>
-
-                {/* Template Preview Card */}
-                <motion.div
-                  className="relative aspect-[3/4] rounded-xl md:rounded-2xl overflow-hidden shadow-2xl mx-auto w-full max-w-[300px] md:max-w-none"
-                  style={{
-                    perspective: "1000px",
-                    transform: `rotateY(${(mousePosition.x - 0.5) * 10}deg) rotateX(${(mousePosition.y - 0.5) * -10}deg)`
-                  }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-gray-900 to-gray-800" />
-                  <div className={`absolute inset-0 bg-gradient-to-br ${templates[currentTemplate].color} opacity-20`} />
-                  <img 
-                    src={templates[currentTemplate].previewImage}
-                    alt={templates[currentTemplate].name}
-                    className="absolute inset-0 w-full h-full object-cover mix-blend-overlay"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent" />
-                </motion.div>
-
-                {/* Template Info */}
-                <div className="flex flex-col justify-center space-y-4 md:space-y-8 text-center md:text-left">
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                  >
-                    <h3 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4 bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
-                      {templates[currentTemplate].name}
-                    </h3>
-                    <div className="flex items-center justify-center md:justify-start gap-2 md:gap-4 mb-4 md:mb-6 flex-wrap">
-                      <span className="px-3 md:px-4 py-1 md:py-1.5 bg-white/10 rounded-full text-sm font-medium backdrop-blur-sm">
-                        {templates[currentTemplate].category}
-                      </span>
-                      <div className="flex items-center gap-1 md:gap-2">
-                        <Star className="w-4 h-4 md:w-5 md:h-5 text-yellow-400 fill-yellow-400" />
-                        <span>{templates[currentTemplate].rating}</span>
-                      </div>
-                      <div className="flex items-center gap-1 md:gap-2">
-                        <Download className="w-4 h-4 md:w-5 md:h-5 text-blue-400" />
-                        <span>{templates[currentTemplate].downloads}</span>
-                      </div>
-                    </div>
-                    <p className="text-gray-400 text-sm md:text-lg leading-relaxed px-4 md:px-0">
-                      Perfect for {templates[currentTemplate].category.toLowerCase()} roles. 
-                      Optimized for ATS systems and highly customizable to match your style.
-                    </p>
-                  </motion.div>
-
-                  <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start px-4 md:px-0">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="px-6 md:px-8 py-3 md:py-4 rounded-full font-semibold bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 transition-colors text-sm md:text-base"
+                {[...Array(3)].map((_, index) => {
+                  const templateIndex = (currentTemplate + index - 1 + templates.length) % templates.length;
+                  return (
+                    <motion.div
+                      key={index}
+                      className="relative group"
+                      whileHover={{ scale: 1.05, y: -10 }}
+                      onMouseMove={handleMouseMove}
                     >
-                      Use This Template
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="px-6 md:px-8 py-3 md:py-4 rounded-full font-semibold bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-colors text-sm md:text-base"
-                    >
-                      Preview
-                    </motion.button>
-                  </div>
-                </div>
+                      <div className="w-96 h-[32rem] rounded-2xl overflow-hidden bg-white/5 backdrop-blur-2xl border border-white/10 relative">
+                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500/20 to-purple-500/20 animate-border-glow" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-gray-900/90 to-gray-800/90" />
+                        <div className={`absolute inset-0 bg-gradient-to-br ${templates[templateIndex].color} opacity-10`} />
+                        <img
+                          src={templates[templateIndex].previewImage}
+                          alt={templates[templateIndex].name}
+                          className="absolute inset-0 w-full h-full object-cover mix-blend-overlay"
+                        />
+                        
+                        {/* Hover Overlay with Glassmorphism */}
+                        <div className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col items-center justify-center p-8">
+                          <div className="bg-white/10 backdrop-blur-xl p-8 rounded-xl border border-white/20 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                            <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">{templates[templateIndex].name}</h3>
+                            <p className="text-gray-300 text-base mb-8 text-center">{templates[templateIndex].category}</p>
+                            <motion.button
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              className="w-full px-8 py-4 rounded-xl font-semibold bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 transition-colors flex items-center justify-center gap-3 text-lg shadow-lg"
+                            >
+                              Use Template
+                              <ArrowRight className="w-5 h-5" />
+                            </motion.button>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
               </motion.div>
             </AnimatePresence>
+          </div>
 
-            {/* Template Indicators */}
-            <div className="flex justify-center gap-2 md:gap-3 mt-4 md:mt-8">
-              {templates.map((_, index) => (
-                <motion.button
-                  key={index}
-                  className={`relative h-1.5 rounded-full transition-all duration-300 ${
-                    currentTemplate === index ? 'w-6 md:w-8 bg-blue-500' : 'w-3 md:w-4 bg-gray-600'
-                  }`}
-                  whileHover={{ scale: 1.2 }}
-                  onClick={() => {
-                    setDirection(index > currentTemplate ? 1 : -1);
-                    setCurrentTemplate(index);
-                  }}
-                />
-              ))}
-            </div>
+          {/* Template Indicators */}
+          <div className="flex justify-center gap-3 mt-8">
+            {templates.map((_, index) => (
+              <motion.button
+                key={index}
+                className={`h-2 rounded-full transition-all duration-300 ${currentTemplate === index ? 'w-8 bg-blue-500' : 'w-2 bg-gray-600'}`}
+                whileHover={{ scale: 1.2 }}
+                onClick={() => {
+                  setDirection(index > currentTemplate ? 1 : -1);
+                  setCurrentTemplate(index);
+                }}
+              />
+            ))}
           </div>
         </div>
       </div>

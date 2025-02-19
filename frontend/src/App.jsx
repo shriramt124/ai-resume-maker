@@ -8,6 +8,8 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Login from './components/Login'
 import SignUp from './components/SignUp'
+import Pricing from './components/Pricing'
+import Contact from './components/Contact'
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
           <Route path="/test" element={<GetData />}/>
           <Route path="/login" element={<Login />}/>
           <Route path="/signup" element={<SignUp />}/>
+          <Route path="/pricing" element={<Pricing />}/>
+          <Route path="/contact" element={<Contact />}/>
         </Routes>
       </main>
       <Footer />
