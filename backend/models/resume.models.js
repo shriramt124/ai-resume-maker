@@ -3,12 +3,13 @@ import mongoose from 'mongoose';
 const resumeSchema = new mongoose.Schema({
 
     personalInfo: {
-        photo:String,
+        photo: String,
         fullName: { type: String, required: true },
         email: { type: String, required: true },
         phone: { type: String, required: true },
         location: { type: String, required: false },
         linkedIn: { type: String, required: false },
+        github: { type: String, required: false },
         portfolio: { type: String, required: false },
         summary: { type: String, required: false }
     },
@@ -47,15 +48,16 @@ const resumeSchema = new mongoose.Schema({
     achievements: [{
         title: { type: String, required: true },
         description: { type: String, required: false },
-        date: { type: String, required: false } // Consider using Date type if storing as ISO date
+        date: { type: String, required: false }, // Consider using Date type if storing as ISO date
+        impact: { type: String, required: false }
     }],
-   templateName:{
-    type:String,
-    required:true
-   }
+    templateId: {
+        type: String,
+        required: true
+    }
 });
 
 // Create the Resume model
-const Resume = await mongoose.model('Resume', resumeSchema);
+const Resume = mongoose.model('Resume', resumeSchema);
 
 export default Resume;
