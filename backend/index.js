@@ -9,6 +9,7 @@ import cookieParser from "cookie-parser";
 import authRouter from "./routes/authRoutes.js";
 import { dbConnect } from "./config/db.js";
 import userRouter from "./routes/userRoutes.js";
+import resumeRouter from "./routes/resumeRoutes.js";
 
 const app = express();
 const PORT = 3000;
@@ -36,6 +37,8 @@ app.set("views", path.join(path.dirname(new URL(import.meta.url).pathname.slice(
 
 app.use("/api", authRouter)
 app.use("/user", userRouter);
+app.use("/resume", resumeRouter);
+
 // Store resume data dynamically
 let resumeData = {};
 let a = 2
