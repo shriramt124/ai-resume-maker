@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Sparkles } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 const Footer = () => {
   return (
@@ -13,13 +12,12 @@ const Footer = () => {
             <ul className="space-y-2">
               {['Features', 'Templates', 'Pricing', 'Updates'].map((item) => (
                 <li key={item}>
-                  <motion.a
+                  <a
                     href={`#${item.toLowerCase()}`}
                     className="text-gray-400 hover:text-white transition-colors"
-                    whileHover={{ x: 5 }}
                   >
                     {item}
-                  </motion.a>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -30,13 +28,12 @@ const Footer = () => {
             <ul className="space-y-2">
               {['About', 'Blog', 'Careers', 'Contact'].map((item) => (
                 <li key={item}>
-                  <motion.a
+                  <a
                     href={`#${item.toLowerCase()}`}
                     className="text-gray-400 hover:text-white transition-colors"
-                    whileHover={{ x: 5 }}
                   >
                     {item}
-                  </motion.a>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -47,13 +44,12 @@ const Footer = () => {
             <ul className="space-y-2">
               {['Guide', 'Examples', 'Support', 'FAQ'].map((item) => (
                 <li key={item}>
-                  <motion.a
+                  <a
                     href={`#${item.toLowerCase()}`}
                     className="text-gray-400 hover:text-white transition-colors"
-                    whileHover={{ x: 5 }}
                   >
                     {item}
-                  </motion.a>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -64,13 +60,12 @@ const Footer = () => {
             <ul className="space-y-2">
               {['Privacy', 'Terms', 'Security', 'Cookies'].map((item) => (
                 <li key={item}>
-                  <motion.a
+                  <a
                     href={`#${item.toLowerCase()}`}
                     className="text-gray-400 hover:text-white transition-colors"
-                    whileHover={{ x: 5 }}
                   >
                     {item}
-                  </motion.a>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -78,16 +73,12 @@ const Footer = () => {
         </div>
 
         <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex items-center space-x-2 mb-4 md:mb-0"
-          >
+          <div className="flex items-center space-x-2 mb-4 md:mb-0">
             <Sparkles className="text-blue-400" />
             <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
               ResumeAI
             </span>
-          </motion.div>
+          </div>
 
           <div className="text-gray-400 text-sm">
             © {new Date().getFullYear()} ResumeAI. All rights reserved.

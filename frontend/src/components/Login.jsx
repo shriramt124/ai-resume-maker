@@ -22,35 +22,10 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white overflow-hidden flex items-center justify-center relative">
-      {/* Floating Elements Animation */}
-      <div className="fixed inset-0 pointer-events-none">
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            initial={{ x: Math.random() * window.innerWidth, y: -20 }}
-            animate={{
-              y: window.innerHeight + 20,
-              x: Math.random() * window.innerWidth
-            }}
-            transition={{
-              duration: 10 + Math.random() * 10,
-              repeat: Infinity,
-              ease: "linear"
-            }}
-            className="absolute w-2 h-2 bg-blue-500/20 rounded-full"
-          />
-        ))}
-      </div>
-
+    <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center relative">
       <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-md mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="bg-gray-900/50 backdrop-blur-xl p-8 rounded-2xl border border-gray-800/50 shadow-xl"
-          >
+          <div className="bg-gray-900/50 backdrop-blur-xl p-8 rounded-2xl border border-gray-800/50 shadow-xl">
             <div className="text-center mb-8">
               <h1 className="text-3xl font-bold mb-2">
                 Welcome back
@@ -110,15 +85,13 @@ const Login = () => {
               </div>
 
               {/* Submit Button */}
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+              <button
                 type="submit"
                 className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2 transition-all duration-300"
               >
                 Sign In
                 <ArrowRight className="w-5 h-5" />
-              </motion.button>
+              </button>
 
               {/* Social Login */}
               <div className="relative my-8">
@@ -132,15 +105,13 @@ const Login = () => {
                 </div>
               </div>
 
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+              <button
                 type="button"
                 className="w-full bg-gray-800 hover:bg-gray-700 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2 transition-all duration-300"
               >
                 <Github className="w-5 h-5" />
                 Continue with GitHub
-              </motion.button>
+              </button>
 
               {/* Sign Up Link */}
               <p className="text-center text-gray-400 mt-6">
@@ -150,7 +121,7 @@ const Login = () => {
                 </a>
               </p>
             </form>
-          </motion.div>
+          </div>
         </div>
       </div>
     </div>

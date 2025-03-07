@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Check, X } from 'lucide-react';
 
 const Pricing = () => {
@@ -49,26 +48,19 @@ const Pricing = () => {
   return (
     <div className="min-h-screen bg-gray-950 text-white pt-20 pb-12">
       <div className="container mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-16"
-        >
+        <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
             Choose Your Perfect Plan
           </h1>
           <p className="text-gray-400 max-w-2xl mx-auto text-lg">
             Select the plan that best fits your needs. All plans include our core features.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {plans.map((plan, index) => (
-            <motion.div
+          {plans.map((plan) => (
+            <div
               key={plan.name}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
               className={`relative bg-gray-900 rounded-2xl p-8 border border-gray-800 ${plan.popular ? 'md:-mt-8' : ''}`}
             >
               {plan.popular && (
@@ -103,15 +95,13 @@ const Pricing = () => {
                 ))}
               </div>
 
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <button
                 className={`w-full mt-8 py-4 rounded-xl font-semibold bg-gradient-to-r ${plan.color} 
                   ${plan.popular ? 'text-white' : 'text-white/90'}`}
               >
                 Get Started
-              </motion.button>
-            </motion.div>
+              </button>
+            </div>
           ))}
         </div>
 
@@ -120,13 +110,11 @@ const Pricing = () => {
           <p className="text-gray-400 mb-8">
             Contact us for custom pricing and features tailored to your needs.
           </p>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <button
             className="bg-white/10 hover:bg-white/20 px-8 py-4 rounded-xl font-semibold"
           >
             Contact Sales
-          </motion.button>
+          </button>
         </div>
       </div>
     </div>

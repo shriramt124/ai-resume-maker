@@ -1,31 +1,22 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Linkedin, Github, Twitter } from 'lucide-react';
 
 const Contact = () => {
   return (
     <div className="min-h-screen bg-gray-950 text-white pt-20 pb-12">
       <div className="container mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-16"
-        >
+        <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
             Get in Touch
           </h1>
           <p className="text-gray-400 max-w-2xl mx-auto text-lg">
             Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
           {/* Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="bg-gray-900 rounded-2xl p-8 border border-gray-800"
-          >
+          <div className="bg-gray-900 rounded-2xl p-8 border border-gray-800">
             <form className="space-y-6">
               <div>
                 <label className="block text-sm font-medium mb-2">Name</label>
@@ -50,22 +41,16 @@ const Contact = () => {
                   placeholder="Your message"
                 />
               </div>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="w-full py-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl font-semibold"
+              <button
+                className="w-full py-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-colors"
               >
                 Send Message
-              </motion.button>
+              </button>
             </form>
-          </motion.div>
+          </div>
 
           {/* Contact Information */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="space-y-8"
-          >
+          <div className="space-y-8">
             {/* Contact Details */}
             <div className="space-y-6">
               <h3 className="text-2xl font-bold">Contact Information</h3>
@@ -108,16 +93,14 @@ const Contact = () => {
                   { icon: Linkedin, href: '#', label: 'LinkedIn' },
                   { icon: Twitter, href: '#', label: 'Twitter' },
                   { icon: Github, href: '#', label: 'GitHub' },
-                ].map((social, index) => (
-                  <motion.a
+                ].map((social) => (
+                  <a
                     key={social.label}
                     href={social.href}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
                     className="p-3 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors"
                   >
                     <social.icon className="w-6 h-6 text-blue-400" />
-                  </motion.a>
+                  </a>
                 ))}
               </div>
             </div>
@@ -136,7 +119,7 @@ const Contact = () => {
                 />
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </div>
