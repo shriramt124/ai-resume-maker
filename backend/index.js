@@ -10,6 +10,7 @@ import authRouter from "./routes/authRoutes.js";
 import { dbConnect } from "./config/db.js";
 import userRouter from "./routes/userRoutes.js";
 import resumeRouter from "./routes/resumeRoutes.js";
+import Resume from "./models/resume.models.js";
 
 const app = express();
 const PORT = 3000;
@@ -27,11 +28,18 @@ app.use(cors({
 }))
 
 app.use(express.urlencoded({ extended: true }))
-app.engine("hbs", engine({ extname: ".hbs", defaultLayout: "main" }));
+// Configure Handlebars to allow access to prototype properties
+app.engine("hbs", engine({
+    extname: ".hbs",
+    defaultLayout: "main",
+    // Add this option to allow prototype access
+    runtimeOptions: {
+        allowProtoPropertiesByDefault: true,
+        allowProtoMethodsByDefault: true
+    }
+}));
 app.set("view engine", "hbs");
 app.set("views", path.join(path.dirname(new URL(import.meta.url).pathname.slice(1)), "templates"));
-
-
 
 
 
@@ -39,41 +47,31 @@ app.use("/api", authRouter)
 app.use("/user", userRouter);
 app.use("/resume", resumeRouter);
 
-// Store resume data dynamically
-let resumeData = {};
-let a = 2
-let b = 4
-
-// API to receive and store resume data
-app.post("/generate-resume", (req, res) => {
-    resumeData = req.body;
-    res.status(200).json({ message: "Resume data received successfully!" });
-});
-
-// Route to render the dynamic resume
-app.get("/resume", (req, res) => {
-    if (a === 1) {
-        return res.render("layouts/resume", resumeData);
-    }
-    return res.render("layouts/resume1", resumeData);
-});
-
-
-
-
-
-
 // Route to generate and download PDF
 app.get("/download-pdf", async (req, res) => {
     try {
+        // Get template ID and resume data from query parameters
+        const templateId = req.query.templateId || "template1";
+        const resumeData = req.query.data ? JSON.parse(decodeURIComponent(req.query.data)) : {};
+
+        // If no data provided in query params, try to fetch from database
+        if (!Object.keys(resumeData).length && req.query.resumeId) {
+            try {
+                const resume = await Resume.findById(req.query.resumeId);
+                if (resume) {
+                    resumeData = resume.toObject();
+                }
+            } catch (err) {
+                console.error("Error fetching resume data:", err);
+            }
+        }
+
         const browser = await puppeteer.launch({ headless: "new" });
         const page = await browser.newPage();
 
-        // Render the updated HTML with received resume data
-        let content = "layouts/resume"
-        if (a === 2) {
-            content = "layouts/resume1"
-        }
+        // Select template based on templateId
+        let content = `layouts/${templateId}`;
+
         const htmlContent = await new Promise((resolve, reject) => {
             app.render(content, resumeData, (err, html) => {
                 if (err) reject(err);
