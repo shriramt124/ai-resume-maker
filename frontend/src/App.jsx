@@ -2,7 +2,7 @@
 import './App.css'
 import {Routes, Route} from "react-router-dom"
 import MultiForm from './components/MultiForm'
-import Home from './components/Home'
+import ProfessionalHome from './components/ProfessionalHome'
  
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
@@ -19,7 +19,7 @@ function App() {
       <Navbar />
       <main className="pt-20 pb-12">
         <Routes>
-          <Route path="/" element={<Home />}/>
+          <Route path="/" element={<ProfessionalHome />}/>
           <Route path="/info" element={<MultiForm />}/>
         
           <Route path="/login" element={<Login />}/>
