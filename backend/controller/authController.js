@@ -86,6 +86,7 @@ export const register = async (req, res) => {
 }
 export const login = async (req, res) => {
     try {
+        console.log("login request came here")
         const { email, password,username } = req.body;
         console.log(req.body)
         // Validate required fields
@@ -337,12 +338,13 @@ export const isLoggedIn = async (req, res) => {
                 maxAge: 15 * 60 * 1000 // 15 minutes
             });
 
-           return res.status(200).json({
-                success: true,
-                isLoggedIn: true,
-                user:user
-            })
+          
         }
+        return res.status(200).json({
+            success: true,
+            isLoggedIn: true,
+            user: user
+        })
     } catch (error) {
         res.clearCookie('accessToken');
         res.clearCookie('refreshToken');
