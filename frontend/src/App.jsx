@@ -12,6 +12,12 @@ import Pricing from './components/Pricing'
 import Contact from './components/Contact'
  
 import TemplatesGallery from './components/TemplatesGallery'
+ 
+import DashboardLayout from './layouts/DashboardLayout'
+import AllResumes from './components/DashboardSection/AllResumes'
+import CoverLetters from './components/DashboardSection/CoverLetters'
+import Profile from './components/DashboardSection/Profile'
+import TemplateShowcase from './components/TemplateShowCase'
 
 function App() {
   return (
@@ -26,7 +32,14 @@ function App() {
           <Route path="/signup" element={<SignUp />}/>
           <Route path="/pricing" element={<Pricing />}/>
           <Route path="/contact" element={<Contact />}/>
-          <Route path="/templates" element={<TemplatesGallery />}/>
+          <Route path="/templates" element={<TemplatesGallery />} />
+          <Route path="/Dashboard" element={<DashboardLayout />}>
+            <Route index element={<AllResumes />} />
+            <Route path="coverletters" element={<CoverLetters />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="createresume" element={<MultiForm />} />
+            <Route path="templates" element={<TemplatesGallery />} />
+            </Route>
         </Routes>
       </main>
       <Footer />
