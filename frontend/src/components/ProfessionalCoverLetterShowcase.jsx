@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 
 const ProfessionalCoverLetterShowcase = () => {
+    // State to track active tab (0 for Cover Letter, 1 for Features)
+    const [activeTab, setActiveTab] = useState(0);
+
     return (
         <section className="py-20 bg-gradient-to-b from-gray-900 to-gray-950 overflow-hidden">
             <div className="container mx-auto px-6">
@@ -23,10 +26,26 @@ const ProfessionalCoverLetterShowcase = () => {
                     </div>
                 </div>
 
+                {/* Tab buttons for small screens */}
+                <div className="md:hidden flex mb-6 border border-gray-700 rounded-lg overflow-hidden">
+                    <button 
+                        className={`flex-1 py-3 px-4 text-center font-medium transition-colors ${activeTab === 0 ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-400'}`}
+                        onClick={() => setActiveTab(0)}
+                    >
+                        Cover Letter
+                    </button>
+                    <button 
+                        className={`flex-1 py-3 px-4 text-center font-medium transition-colors ${activeTab === 1 ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-400'}`}
+                        onClick={() => setActiveTab(1)}
+                    >
+                        Features
+                    </button>
+                </div>
+
                 {/* Cover Letter Example and Features */}
                 <div className="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto bg-gray-900/50 rounded-2xl overflow-hidden border border-gray-800 shadow-xl">
-                    {/* Cover Letter Example */}
-                    <div className="lg:w-3/5 p-8 bg-white backdrop-blur-sm">
+                    {/* Cover Letter Example - Show on large screens or when active tab is 0 */}
+                    <div className={`lg:w-3/5 p-8 bg-white backdrop-blur-sm ${(activeTab === 0 || window.innerWidth >= 768) ? 'block' : 'hidden md:block'}`}>
                         <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-inner h-full">
                             <h3 className="text-xl font-bold mb-6 text-gray-800">Professional Cover Letter</h3>
                             
@@ -55,8 +74,8 @@ const ProfessionalCoverLetterShowcase = () => {
                         </div>
                     </div>
 
-                    {/* Key Features */}
-                    <div className="lg:w-2/5 p-8 flex flex-col justify-center">
+                    {/* Key Features - Show on large screens or when active tab is 1 */}
+                    <div className={`lg:w-2/5 p-8 flex flex-col justify-center ${(activeTab === 1 || window.innerWidth >= 768) ? 'block' : 'hidden md:block'}`}>
                         <h3 className="text-xl font-bold mb-6 text-blue-400">Key Features</h3>
                         
                         <div className="space-y-6">
@@ -94,6 +113,24 @@ const ProfessionalCoverLetterShowcase = () => {
                     </p>
                 </div>
             </div>
+
+            {/* Fix for window.innerWidth reference in SSR */}
+            <script dangerouslySetInnerHTML={{ __html: `
+                document.addEventListener('DOMContentLoaded', function() {
+                    const updateVisibility = () => {
+                        const coverLetter = document.querySelector('.cover-letter-section');
+                        const features = document.querySelector('.features-section');
+                        if (coverLetter && features) {
+                            if (window.innerWidth >= 768) {
+                                coverLetter.classList.remove('hidden');
+                                features.classList.remove('hidden');
+                            }
+                        }
+                    };
+                    window.addEventListener('resize', updateVisibility);
+                    updateVisibility();
+                });
+            `}} />
         </section>
     );
 };
