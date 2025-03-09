@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
     // Check if user is logged in on initial load
     useEffect(() => {
         checkAuthStatus();
-    }, [user]);
+    }, []); // Remove user dependency to prevent infinite loop
 
     const checkAuthStatus = async () => {
         try {

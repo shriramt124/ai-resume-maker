@@ -18,6 +18,7 @@ import AllResumes from './components/DashboardSection/AllResumes'
 import CoverLetters from './components/DashboardSection/CoverLetters'
 import Profile from './components/DashboardSection/Profile'
 import TemplateShowcase from './components/TemplateShowCase'
+import MultiStepForm from './components/MultiStepForm/MultiStepForm'
 
 function App() {
   return (
@@ -37,7 +38,7 @@ function App() {
             <Route index element={<AllResumes />} />
             <Route path="coverletters" element={<CoverLetters />} />
             <Route path="profile" element={<Profile />} />
-            <Route path="createresume" element={<MultiForm />} />
+            <Route path="createresume" element={<MultiStepForm />} />
             <Route path="templates" element={<TemplatesGallery />} />
             </Route>
         </Routes>
