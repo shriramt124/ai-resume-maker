@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import PreviewPortal from './PreviewPortal';
 import PersonalInfoForm from './steps/PersonalInfoForm';
@@ -11,12 +12,13 @@ import AchievementsForm from './steps/AchievementsForm';
 import PreviewResume from './PreviewResume';
 
 const MultiStepForm = () => {
+    const location = useLocation();
     const [currentStep, setCurrentStep] = useState(1);
     const [showPreview, setShowPreview] = useState(false);
     const [previewUrl, setPreviewUrl] = useState('');
     const [isPreviewLoading, setIsPreviewLoading] = useState(false);
     const [sessionId, setSessionId] = useState(null);
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState(location.state?.resumeData || {
         personalInfo: {
             photo: '',
             fullName: 'shriram tiwari',
@@ -71,13 +73,21 @@ const MultiStepForm = () => {
         }));
     };
 
+    // Initialize form data from location state if available
+    useEffect(() => {
+        if (location.state?.resumeData) {
+            console.log('Initializing form with existing resume data:', location.state.resumeData);
+            setFormData(location.state.resumeData);
+        }
+    }, [location.state]);
+
     // Create a preview session when form data changes significantly
     useEffect(() => {
         // Only create a session if we have meaningful data
-        if (formData.personalInfo.fullName && !sessionId) {
+        if (formData.personalInfo?.fullName && !sessionId) {
             createPreviewSession();
         }
-    }, [formData.personalInfo.fullName]);
+    }, [formData.personalInfo?.fullName]);
 
     // Create a new session with the current form data
     const createPreviewSession = async () => {
