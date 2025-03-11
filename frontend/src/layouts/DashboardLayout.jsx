@@ -42,14 +42,14 @@ const DashboardLayout = () => {
                         >
                             📊 Overview
                         </NavLink>
-                        <NavLink
+                        {/* <NavLink
                             to="/dashboard/createresume"
                             className={({ isActive }) =>
                                 `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive ? 'bg-blue-500/10 text-blue-400 font-medium' : 'text-gray-400 hover:bg-gray-800/50 hover:text-gray-200'}`
                             }
                         >
                             📝 Create Resume
-                        </NavLink>
+                        </NavLink> */}
                         <NavLink
                             to="/dashboard/coverletters"
                             className={({ isActive }) =>

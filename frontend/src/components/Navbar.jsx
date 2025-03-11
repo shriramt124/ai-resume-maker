@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import { Sparkles, Menu, X, User, LogOut } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { user, logout } = useAuth();
@@ -25,7 +27,6 @@ const Navbar = () => {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
             <Link to="/" className="text-gray-300 hover:text-white transition-colors">Home</Link>
-            <Link to="/info" className="text-gray-300 hover:text-white transition-colors">Create Resume</Link>
             <Link to="/pricing" className="text-gray-300 hover:text-white transition-colors">Pricing</Link>
             <Link to="/contact" className="text-gray-300 hover:text-white transition-colors">Contact</Link>
             
@@ -47,16 +48,19 @@ const Navbar = () => {
                 {isProfileOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-gray-900 rounded-md shadow-lg py-1 z-50 border border-gray-800">
                     <Link 
-                      to="/profile" 
+                      to="/dashboard" 
                       className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white"
-                      onClick={() => setIsProfileOpen(false)}
+                        onClick={() => setIsProfileOpen(false)
+                        
+                      }
                     >
-                      Profile
+                      Dashboard
                     </Link>
                     <button 
                       onClick={() => {
                         logout();
-                        setIsProfileOpen(false);
+                          setIsProfileOpen(false);
+                          
                       }}
                       className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white"
                     >
@@ -127,17 +131,19 @@ const Navbar = () => {
             ) : (
               <div className="mt-4 border-t border-gray-800 pt-4">
                 <Link 
-                  to="/profile" 
+                  to="/dashboard" 
                   className="flex items-center py-2 text-gray-300 hover:text-white"
                   onClick={() => setIsNavOpen(false)}
                 >
                   <User size={16} className="mr-2" />
-                  Profile
+                  Dashboard
                 </Link>
                 <button 
-                  onClick={() => {
+                    onClick={() => {
+                      
                     logout();
-                    setIsNavOpen(false);
+                      setIsNavOpen(false);
+                      navigate("/login")
                   }}
                   className="flex items-center w-full text-left py-2 text-gray-300 hover:text-white"
                 >

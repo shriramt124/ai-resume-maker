@@ -21,14 +21,14 @@ const MultiStepForm = () => {
     const [formData, setFormData] = useState(location.state?.resumeData || {
         personalInfo: {
             photo: '',
-            fullName: 'shriram tiwari',
-            email: 'shriramt.124@gmail.com',
-            phone: '9516559181',
-            location: 'indore',
+            fullName: '',
+            email: '',
+            phone: '',
+            location: '',
             linkedIn: '',
             github: '',
             portfolio: '',
-            summary: 'i am a full stack developer with proficient in mern stack enxtjs dsa compouter networsk and backend '
+            summary: ''
         },
         experience: [],
         education: [],
@@ -40,7 +40,7 @@ const MultiStepForm = () => {
         },
         certifications: [],
         achievements: [],
-        templateId: 'template1' // Default template
+        templateId: '' // Default template
     });
 
     const steps = [

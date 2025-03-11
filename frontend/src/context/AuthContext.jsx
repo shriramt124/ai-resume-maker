@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         try {
             setLoading(true);
-            await axios.post('/api/auth/logout');
+            await axios.post('http://localhost:3000/api/logout');
             setUser(null);
         } catch (error) {
             console.error('Logout error:', error);
@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }) => {
         try {
             setLoading(true);
             setError(null);
-            const response = await axios.post('/api/forgot-password', { email });
+            const response = await axios.post('http://localhost:3000/api/forgot-password', { email });
             return response.data;
         } catch (error) {
             setError(error.response?.data?.message || 'Failed to send reset email');
@@ -96,7 +96,7 @@ export const AuthProvider = ({ children }) => {
         try {
             setLoading(true);
             setError(null);
-            const response = await axios.post(`/api/reset-password/${token}`, { token, newPassword });
+            const response = await axios.post(`http://localhost:3000/api/reset-password/${token}`, { token, newPassword });
             return response.data;
         } catch (error) {
             setError(error.response?.data?.message || 'Password reset failed');
@@ -108,7 +108,7 @@ export const AuthProvider = ({ children }) => {
 
     const refreshAuthToken = async () => {
         try {
-            const response = await axios.get('/api/refreshToken');
+            const response = await axios.get('http://localhost:3000/api/refreshToken');
             return response.data;
         } catch (error) {
             console.error('Token refresh error:', error);

@@ -27,7 +27,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await login(formData);
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
       setFormError(err.response?.data?.message || 'Login failed. Please check your credentials.');
     }
