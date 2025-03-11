@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Resume</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        html {
+            background-color: #f5f5f5;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            width: 600px; /* A4 width in pixels */
+            min-height: 900px; /* A4 height in pixels */
+            margin: 0 auto;
+            background-color: #a9d378;
+            color: #333;
+            padding: 10px;
+            box-sizing: border-box;
+            overflow-x: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .page {
+            position: relative;
+            width: 600px;
+            min-height: 900px;
+            padding: 10px;
+            box-sizing: border-box;
+            background-color: #fff;
+            margin-bottom: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .page:not(:first-child) {
+            margin-top: q0px;
+        }
+        @media print {
+            html, body {
+                width: 210mm;
+                height: auto;
+                background-color: #fff;
+            }
+            body {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+            }
+            .page {
+                width: 210mm;
+                height: 297mm;
+                padding: 10mm;
+                margin: 0;
+                box-shadow: none;
+                page-break-after: always;
+            }
+            .page:last-child {
+                page-break-after: avoid;
+            }
+            .section {
+                page-break-inside: avoid;
+            }
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .name {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .contact-info {
+            margin: 15px 0;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+
+        .contact-info a {
+            color: #3498db;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            font-size: 1.5em;
+        }
+
+        .job {
+            margin-bottom: 15px;
+        }
+
+        .job-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 5px 0;
+        }
+
+        .company {
+            color: #7f8c8d;
+            margin: 5px 0;
+        }
+
+        .date-range {
+            color: #95a5a6;
+            font-style: italic;
+        }
+
+        .project {
+            margin-bottom: 10px;
+        }
+
+        .project-name {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .tech-stack {
+            color: #3498db;
+            margin: 5px 0;
+        }
+
+        .link {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .skills,
+        .certifications,
+        .achievements {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .skill-item,
+        .cert-item,
+        .achievement-item {
+            background: #ecf0f1;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .impact {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="header">
+            <div class="name">{{personalInfo.fullName}}</div>
+            <div class="contact-info">
+                {{#if personalInfo.email}}
+                    <span>Email: {{personalInfo.email}}</span>
+                {{/if}}
+                {{#if personalInfo.phone}}
+                    <span>Phone: {{personalInfo.phone}}</span>
+                {{/if}}
+                {{#if personalInfo.location}}
+                    <span>Location: {{personalInfo.location}}</span>
+                {{/if}}
+                {{#if personalInfo.linkedIn}}
+                    <a href="{{personalInfo.linkedIn}}">LinkedIn</a>
+                {{/if}}
+                {{#if personalInfo.github}}
+                    <a href="{{personalInfo.github}}">GitHub</a>
+                {{/if}}
+                {{#if personalInfo.portfolio}}
+                    <a href="{{personalInfo.portfolio}}">Portfolio</a>
+                {{/if}}
+            </div>
+        </div>
+
+        {{#if personalInfo.summary}}
+        <div class="section">
+            <div class="section-title">Professional Summary</div>
+            <p>{{personalInfo.summary}}</p>
+        </div>
+        {{/if}}
+
+        <div class="section">
+            <div class="section-title">Experience</div>
+            {{#each experience}}
+            <div class="job">
+                <div class="job-title">{{position}}</div>
+                <div class="company">{{company}}</div>
+                <div class="date-range">
+                    {{startDate}} - {{#if current}}Present{{else}}{{endDate}}{{/if}}
+                </div>
+                <p>{{description}}</p>
+            </div>
+            {{/each}}
+        </div>
+
+        <div class="section">
+            <div class="section-title">Education</div>
+            {{#each education}}
+            <div class="education-item">
+                <div class="degree">{{degree}} in {{field}}</div>
+                <div class="institution">{{institution}}</div>
+                <div class="graduation">Graduated: {{graduationDate}} | GPA: {{gpa}}</div>
+            </div>
+            {{/each}}
+        </div>
+
+        <div class="section">
+            <div class="section-title">Projects</div>
+            {{#each projects}}
+            <div class="project">
+                <div class="project-name">{{name}}</div>
+                <p>{{description}}</p>
+                {{#if technologies}}
+                    <div class="tech-stack">Tech Stack: {{technologies}}</div>
+                {{/if}}
+                {{#if link}}
+                    <div><a class="link" href="{{link}}">View Project</a></div>
+                {{/if}}
+            </div>
+            {{/each}}
+        </div>
+
+        {{#if skills}}
+        <div class="section">
+            <div class="section-title">Skills</div>
+            <div class="skills">
+                {{#if skills.technical}}
+                    <div class="skill-item">
+                        <strong>Technical:</strong> {{skills.technical}}
+                    </div>
+                {{/if}}
+                {{#if skills.soft}}
+                    <div class="skill-item">
+                        <strong>Soft Skills:</strong> {{skills.soft}}
+                    </div>
+                {{/if}}
+                {{#if skills.languages}}
+                    <div class="skill-item">
+                        <strong>Languages:</strong> {{skills.languages}}
+                    </div>
+                {{/if}}
+            </div>
+        </div>
+        {{/if}}
+
+        {{#if certifications}}
+        <div class="section">
+            <div class="section-title">Certifications</div>
+            <div class="certifications">
+                {{#each certifications}}
+                <div class="cert-item">
+                    <div class="cert-name">{{name}}</div>
+                    <div class="issuer">{{issuer}}</div>
+                    <div class="date">{{date}}</div>
+                    {{#if link}}
+                        <a class="link" href="{{link}}">View Certification</a>
+                    {{/if}}
+                </div>
+                {{/each}}
+            </div>
+        </div>
+        {{/if}}
+
+        {{#if achievements}}
+        <div class="section">
+            <div class="section-title">Achievements</div>
+            <div class="achievements">
+                {{#each achievements}}
+                <div class="achievement-item">
+                    <div class="title">{{title}}</div>
+                    {{#if description}}
+                        <div class="description">{{description}}</div>
+                    {{/if}}
+                    {{#if impact}}
+                        <div class="impact">Impact: {{impact}}</div>
+                    {{/if}}
+                    {{#if date}}
+                        <div class="date">{{date}}</div>
+                    {{/if}}
+                </div>
+                {{/each}}
+            </div>
+        </div>
+        {{/if}}
+    </div>
+    
+    <script>
+        // Script to handle automatic pagination
+        document.addEventListener('DOMContentLoaded', function() {
+            const CONTENT_HEIGHT_THRESHOLD = 760; // A4 height minus margins in pixels
+            const page = document.querySelector('.page');
+            
+            // Function to check if content overflows and create new pages
+            function handlePagination() {
+                // Get all sections
+                const sections = Array.from(document.querySelectorAll('.section'));
+                
+                // Start with first page
+                let currentPage = page;
+                let currentPageHeight = 0;
+                
+                // Process each section
+                sections.forEach((section, index) => {
+                    const sectionHeight = section.offsetHeight;
+                    
+                    // If adding this section would overflow the page
+                    if (currentPageHeight + sectionHeight > CONTENT_HEIGHT_THRESHOLD && index > 0) {
+                        // Create a new page
+                        const newPage = document.createElement('div');
+                        newPage.className = 'page';
+                        document.body.appendChild(newPage);
+                        
+                        // Move section to new page
+                        newPage.appendChild(section);
+                        
+                        // Reset height counter for new page
+                        currentPage = newPage;
+                        currentPageHeight = sectionHeight;
+                    } else {
+                        // Add section height to current page
+                        currentPageHeight += sectionHeight;
+                    }
+                });
+            }
+            
+            // Run pagination after a short delay to ensure all content is rendered
+            setTimeout(handlePagination, 100);
+        });
+    </script>
+</body>
+</html>

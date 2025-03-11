@@ -37,7 +37,7 @@ const ResumeForm = () => {
   useEffect(() => {
     const updateBackend = async () => {
       try {
-        const response = await fetch("http://localhost:3000/resume/generate-Resume", {
+        const response = await fetch("http://localhost:3000/resume/save", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(resumeData),

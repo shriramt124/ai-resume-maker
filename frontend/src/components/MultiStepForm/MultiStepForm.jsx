@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PreviewPortal from './PreviewPortal';
 import PersonalInfoForm from './steps/PersonalInfoForm';
@@ -15,6 +15,7 @@ const MultiStepForm = () => {
     const [showPreview, setShowPreview] = useState(false);
     const [previewUrl, setPreviewUrl] = useState('');
     const [isPreviewLoading, setIsPreviewLoading] = useState(false);
+    const [sessionId, setSessionId] = useState(null);
     const [formData, setFormData] = useState({
         personalInfo: {
             photo: '',
@@ -70,23 +71,76 @@ const MultiStepForm = () => {
         }));
     };
 
-    const handlePreview = async () => {
-        setIsPreviewLoading(true);
+    // Create a preview session when form data changes significantly
+    useEffect(() => {
+        // Only create a session if we have meaningful data
+        if (formData.personalInfo.fullName && !sessionId) {
+            createPreviewSession();
+        }
+    }, [formData.personalInfo.fullName]);
+
+    // Create a new session with the current form data
+    const createPreviewSession = async () => {
         try {
-            const response = await fetch('http://localhost:3000/resume/generate-Resume', {
+            setIsPreviewLoading(true);
+            const response = await fetch('http://localhost:3000/resume/create-preview-session', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify(formData)
             });
 
             if (!response.ok) {
-                throw new Error('Failed to generate preview');
+                throw new Error('Failed to create preview session');
             }
 
             const data = await response.json();
-            setPreviewUrl(data.previewUrl);
+            setSessionId(data.sessionId);
+        } catch (error) {
+            console.error('Error creating preview session:', error);
+        } finally {
+            setIsPreviewLoading(false);
+        }
+    };
+
+    // Update the session with new form data
+    const updatePreviewSession = async () => {
+        if (!sessionId) return;
+        
+        try {
+            const response = await fetch(`http://localhost:3000/resume/update-preview-session/${sessionId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify(formData)
+            });
+
+            if (!response.ok) {
+                // If session expired, create a new one
+                if (response.status === 404) {
+                    await createPreviewSession();
+                } else {
+                    throw new Error('Failed to update preview session');
+                }
+            }
+        } catch (error) {
+            console.error('Error updating preview session:', error);
+        }
+    };
+
+    const handlePreview = async () => {
+        setIsPreviewLoading(true);
+        try {
+            // If we have a session ID, update it; otherwise create a new one
+            if (sessionId) {
+                await updatePreviewSession();
+            } else {
+                await createPreviewSession();
+            }
             setShowPreview(true);
         } catch (error) {
             console.error('Error generating preview:', error);
@@ -99,23 +153,23 @@ const MultiStepForm = () => {
     const handleSubmit = async () => {
         setIsPreviewLoading(true);
         try {
-            const response = await fetch('http://localhost:3000/resume/generate-Resume', {
+            const response = await fetch('http://localhost:3000/resume/save', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify(formData)
             });
 
             if (!response.ok) {
-                throw new Error('Failed to generate resume');
+                throw new Error('Failed to save resume');
             }
 
             const data = await response.json();
-            setPreviewUrl(data.previewUrl);
             setShowPreview(true);
         } catch (error) {
-            console.error('Error generating resume:', error);
+            console.error('Error saving resume:', error);
             // Handle error (e.g., show error message)
         } finally {
             setIsPreviewLoading(false);
@@ -206,7 +260,10 @@ const MultiStepForm = () => {
                     onTemplateChange={(template) => setFormData(prev => ({ ...prev, templateId: template }))}
                 >
                     <iframe
-                        src={previewUrl || `http://localhost:3000/resume/get?templateId=${formData.templateId}&refresh=${Date.now()}`}
+                        src={sessionId 
+                            ? `http://localhost:3000/resume/showByTemplateId?templateId=${formData.templateId}&sessionId=${sessionId}&refresh=${Date.now()}` 
+                            : `http://localhost:3000/resume/showByTemplateId?templateId=${formData.templateId}&data=${encodeURIComponent(JSON.stringify(formData))}&refresh=${Date.now()}`
+                        }
                         title="Resume Preview"
                         className="rounded-lg bg-white w-full h-full"
                         style={{
