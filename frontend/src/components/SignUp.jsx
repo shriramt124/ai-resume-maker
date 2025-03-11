@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Eye, EyeOff, Github, Mail, Lock, User, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import {Link} from "react-router-dom"
 
 const SignUp = () => {
   const { register, loading } = useAuth();
@@ -231,9 +232,9 @@ const SignUp = () => {
               {/* Login Link */}
               <p className="text-center text-gray-400 mt-6">
                 Already have an account?{' '}
-                <a href="/login" className="text-blue-400 hover:text-blue-300 font-medium">
+                <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium">
                   Log in
-                </a>
+                </Link>
               </p>
             </form>
           </motion.div>
