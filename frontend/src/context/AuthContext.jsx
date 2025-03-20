@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import axios from "axios";
+import { Navigate } from "react-router-dom";
 
 const AuthContext = createContext(null);
 
@@ -16,7 +17,10 @@ export const AuthProvider = ({ children }) => {
     // Check if user is logged in on initial load
     useEffect(() => {
         checkAuthStatus();
+
+
     }, []); // Remove user dependency to prevent infinite loop
+   
 
     const checkAuthStatus = async () => {
         try {

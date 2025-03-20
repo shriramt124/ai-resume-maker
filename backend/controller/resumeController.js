@@ -7,7 +7,7 @@ export const getAllResume = async (req, res) => {
     try {
         // Get the user ID from the authenticated request
         const userId = req.user._id;
-        
+
         // Find resumes where the user ID matches
         const resumes = await Resume.find({ _id: req.user.resume });
         res.status(200).json(resumes);
@@ -87,10 +87,10 @@ export const showResumeByTemplateId = async (req, res) => {
 export const createPreviewSession = async (req, res) => {
     try {
         const resumeData = req.body;
-        
+
         // Create a session for the resume data
         const sessionId = createResumeSession(resumeData);
-        
+
         // Return the session ID
         return res.status(200).json({
             status: true,
@@ -110,17 +110,17 @@ export const updatePreviewSession = async (req, res) => {
     try {
         const { sessionId } = req.params;
         const resumeData = req.body;
-        
+
         // Update the session with new resume data
         const updated = updateResumeSession(sessionId, resumeData);
-        
+
         if (!updated) {
             return res.status(404).json({
                 status: false,
                 message: "Session not found or expired"
             });
         }
-        
+
         return res.status(200).json({
             status: true,
             message: "Preview session updated successfully"
@@ -141,7 +141,7 @@ export const downloadResume = async (req, res) => {
         // Get template ID and resume data
         const templateId = req.query.templateId || "template1";
         let resumeData = {};
-        
+
         // Check if session ID was provided
         if (req.query.sessionId) {
             // Get resume data from session
@@ -166,7 +166,10 @@ export const downloadResume = async (req, res) => {
             }
         }
 
-        const browser = await puppeteer.launch({ headless: "new" });
+        const browser = await puppeteer.launch({
+            headless: "new",
+            executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || "C:\\Users\\Lenovo\\.cache\\puppeteer\\chrome\\win64-134.0.6998.35\\chrome-win64\\chrome.exe"
+        });
         const page = await browser.newPage();
 
         // Select template based on templateId
@@ -206,9 +209,9 @@ export const saveResume = async (req, res) => {
     try {
         const resumeData = req.body;
         const templateId = resumeData.templateId;
-        
+
         // Get the authenticated user from the request
-        console.log(req.user,"from the save resume")
+        console.log(req.user, "from the save resume")
         const user = req.user;
 
         if (!user) {
@@ -230,10 +233,10 @@ export const saveResume = async (req, res) => {
                 resumeData,
                 { new: true }
             );
-            
+
             // Update the user's resume reference
             await User.findByIdAndUpdate(user._id, { resume: result._id });
-            
+
             return res.status(200).json({
                 status: true,
                 message: "Resume saved successfully",
@@ -242,10 +245,10 @@ export const saveResume = async (req, res) => {
         } else {
             // Create new resume
             result = await Resume.create(resumeData);
-            
+
             // Update the user's resume reference
             await User.findByIdAndUpdate(user._id, { resume: result._id });
-            
+
             return res.status(201).json({
                 status: true,
                 message: "Resume created successfully",
